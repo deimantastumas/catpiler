@@ -1,38 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { CodeDetailsDto } from './dto/code-details.dto';
 import { EasyconfigService } from 'nestjs-easyconfig';
-import * as AWS from 'aws-sdk';
 import * as fs from 'fs';
+import { ConfigService } from 'src/config/config.service';
+import { S3Service } from './aws/s3.service';
 
 @Injectable()
 export class AppService {
-  constructor (private config: EasyconfigService) {}
+  constructor (private env: EasyconfigService, private config: ConfigService, private s3Service: S3Service) {}
 
   compileCode(codeDetails : CodeDetailsDto) {
     // Fetch code file from S3 bucket
-    const AWS_S3_BUCKET_NAME = this.config.get('AWS_S3_BUCKET_NAME');
-    const fileName = codeDetails.filename;
-    const targetPath = 'code/' + fileName;
+    const bucketName = this.env.get('AWS_S3_BUCKET_NAME');
+    const targetPath = 'code/' + codeDetails.filename;
 
-    AWS.config.update({
-      accessKeyId: this.config.get('AWS_ACCESS_KEY_ID'),
-      secretAccessKey: this.config.get('AWS_SECRET_ACCESS_KEY'),
-    });
-    const s3 = new AWS.S3();
-
-    const filePath = 'source/' + codeDetails.filename;
-
-    const downloadCode = (targetPath, bucketName, filePath) => {
-      const params = {
-        Bucket: bucketName,
-        Key: filePath
-      };
-      s3.getObject(params, (err, data) => {
-        if (err) throw err;
-        fs.writeFileSync(targetPath, data.Body.toString());
-        console.log('Code has been downloaded!');
-      });
-    };
-    downloadCode(targetPath, AWS_S3_BUCKET_NAME, filePath);
+    const code = this.s3Service.downloadFile(bucketName, codeDetails.filepath);
+    fs.writeFileSync(targetPath, code.toString());
   }
 }

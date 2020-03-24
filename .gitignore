@@ -1,3 +1,6 @@
+# code_dir
+/code
+
 # env
 .env.dev
 .env.prod
