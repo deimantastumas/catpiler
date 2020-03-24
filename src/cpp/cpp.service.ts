@@ -8,7 +8,11 @@ import { CodeDetailsDto } from '../dto/code-details.dto';
 
 @Injectable()
 export class CppService {
-  constructor (private env: EasyconfigService, private config: ConfigService, private s3Service: S3Service) {}
+  constructor(
+    private env: EasyconfigService,
+    private config: ConfigService,
+    private s3Service: S3Service,
+  ) {}
 
   compileCode(codeDetails: CodeDetailsDto) {
     // Fetch code file from S3 bucket

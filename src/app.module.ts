@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { EasyconfigModule } from  'nestjs-easyconfig';
+import { EasyconfigModule } from 'nestjs-easyconfig';
 
 import { ConfigService } from 'src/config/config.service';
 import { AppController } from './cpp/cpp.controller';
