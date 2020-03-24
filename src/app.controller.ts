@@ -1,12 +1,14 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Post, Body, Header } from '@nestjs/common';
 import { AppService } from './app.service';
+import { CodeDetailsDto } from './dto/code-details.dto';
 
-@Controller()
+@Controller('api')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Post('cpp')
+  @Header('content-type', 'application/json')
+  compileCode(@Body() codeDetails : CodeDetailsDto) {
+    return this.appService.compileCode(codeDetails);
   }
 }
