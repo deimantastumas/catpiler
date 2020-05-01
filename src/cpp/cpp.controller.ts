@@ -10,6 +10,6 @@ export class AppController {
   @Post('cpp')
   @Header('content-type', 'application/json')
   compileCode(@Body() codeDetails: CodeDetailsDto) {
-    return this.appService.compileCode(codeDetails);
+    return this.appService.evaluateCode(codeDetails);
   }
 }

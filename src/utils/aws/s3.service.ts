@@ -24,7 +24,7 @@ export class S3Service {
     const fileObject: GetObjectOutput = await this.s3
       .getObject(params)
       .promise();
-    return fileObject.Body.toString();
+    return fileObject.Body;
   }
 
   public async listObjects(
