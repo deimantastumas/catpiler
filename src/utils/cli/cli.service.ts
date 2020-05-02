@@ -7,7 +7,7 @@ export class CLIService {
     const targetFile = `${currentDir}/${fileName}`;
     const codeFile = `${currentDir}/${fileName}.cpp`;
 
-    const compileCmd = `g++ -o ${targetFile} ${codeFile}`;
+    const compileCmd = `docker exec comp g++ -o ${targetFile} ${codeFile}`;
     return new Promise((resolve, reject) => {
       exec(compileCmd, error => {
         if (error) {
@@ -19,8 +19,12 @@ export class CLIService {
     });
   }
 
-  executeCode(currentDir: string, codeDetails: CodeDetailsDto, index: number) {
-    const executeCmd = `./${currentDir}/${codeDetails.filename} < ${currentDir}/${index}.in > ${currentDir}/${index}.txt`;
+  executeCode(currentDir: string, codeDetails: CodeDetailsDto) {
+    let executeCmd = `docker exec comp bash -c '`;
+    codeDetails.stdin.forEach((_, index) => {
+      executeCmd += `./${currentDir}/${codeDetails.filename} < ${currentDir}/${index}.in > ${currentDir}/${index}.txt | `;
+    });
+    executeCmd += "ls'"; // filler command to close the pipe
     return new Promise((resolve, reject) => {
       exec(executeCmd, error => {
         if (error) {
@@ -33,7 +37,7 @@ export class CLIService {
   }
 
   deleteFolder(currentDir: string) {
-    const deleteCmd = `rm -rf ${currentDir}`;
+    const deleteCmd = `docker exec comp bash -c 'rm -rf ${currentDir}'`;
     exec(deleteCmd, error => {
       if (error) {
         console.log(error);
@@ -59,12 +63,8 @@ export class CLIService {
     });
 
     // Execute the code with stdin
-    const promises = codeDetails.stdin.map((_, index) =>
-      this.executeCode(currentDir, codeDetails, index),
-    );
     try {
-      // wait for all child_processes to be done
-      await Promise.all(promises);
+      await this.executeCode(currentDir, codeDetails);
     } catch (error) {
       console.log(error);
     }

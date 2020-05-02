@@ -1,6 +1,9 @@
 # code_dir
 /code
 
+# secrets
+cat-vm.pem
+
 # env
 .env.dev
 .env.prod
