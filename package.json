@@ -9,7 +9,7 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start-container": "docker run --name \"comp\" -it -d -v$(pwd)/code:/code --rm compilerenv:1.0  /bin/bash",
+    "start-container": "docker run --name \"comp\" -it -d -v$(pwd)/code:/code --rm atstumas/compiler_env /bin/bash",
     "stop-container": "docker stop comp",
     "start": "NODE_ENV=dev nest start",
     "start:dev": "NODE_ENV=dev nest start --watch",
