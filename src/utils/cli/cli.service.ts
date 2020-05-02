@@ -20,11 +20,11 @@ export class CLIService {
   }
 
   executeCode(currentDir: string, codeDetails: CodeDetailsDto) {
-    let executeCmd = `docker exec comp bash -c '`;
+    let executeCmd = `docker exec comp bash -c "`;
     codeDetails.stdin.forEach((_, index) => {
       executeCmd += `./${currentDir}/${codeDetails.filename} < ${currentDir}/${index}.in > ${currentDir}/${index}.txt | `;
     });
-    executeCmd += "ls'"; // filler command to close the pipe
+    executeCmd += 'ls"'; // filler command to close the pipe
     return new Promise((resolve, reject) => {
       exec(executeCmd, error => {
         if (error) {
@@ -37,7 +37,7 @@ export class CLIService {
   }
 
   deleteFolder(currentDir: string) {
-    const deleteCmd = `docker exec comp bash -c 'rm -rf ${currentDir}'`;
+    const deleteCmd = `docker exec comp bash -c "rm -rf ${currentDir}"`;
     exec(deleteCmd, error => {
       if (error) {
         console.log(error);
