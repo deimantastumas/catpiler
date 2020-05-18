@@ -1,6 +1,12 @@
-# temp
+# code_dir
 /code
-/keys
+
+# secrets
+cat-vm.pem
+
+# env
+.env.dev
+.env.prod
 
 # compiled output
 /dist
