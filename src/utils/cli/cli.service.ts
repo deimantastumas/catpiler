@@ -45,7 +45,10 @@ export class CLIService {
     });
   }
 
-  async processCode(codeDetails: CodeDetailsDto, sessionId: string) {
+  async processCode(
+    codeDetails: CodeDetailsDto,
+    sessionId: string,
+  ): Promise<string[]> {
     const output: string[] = [];
 
     // Compile the code
@@ -82,10 +85,6 @@ export class CLIService {
     // Delete temp directory
     this.deleteFolder(currentDir);
 
-    // Temp console log
-    output.forEach((data, index) => {
-      console.log(`${index}: ${data}`);
-    });
-    console.log('Execution done.\n');
+    return output;
   }
 }

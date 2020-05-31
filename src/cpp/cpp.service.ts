@@ -17,7 +17,7 @@ export class CppService {
     private cliService: CLIService,
   ) {}
 
-  async evaluateCode(codeDetails: CodeDetailsDto) {
+  async evaluateCode(codeDetails: CodeDetailsDto): Promise<number> {
     // Fetch code file from S3 bucket
     const bucketName = this.env.get('AWS_S3_BUCKET_NAME');
     let codeContent: AWS.S3.Body;
@@ -45,8 +45,17 @@ export class CppService {
       });
 
     // Compile and execute the code with stdin
-    this.cliService.processCode(codeDetails, sessionId);
+    const output: string[] = await this.cliService.processCode(
+      codeDetails,
+      sessionId,
+    );
 
     // Compare expected and true results
+    let passedTests = 0;
+    output.forEach((data, index) => {
+      if (data == codeDetails.stdout[index]) passedTests++;
+    });
+
+    return passedTests;
   }
 }
